@@ -11,9 +11,20 @@ public class WashingMachine {
     @Column(name = "id", insertable=false, updatable=false)
     private Long washingMachineId;
 
+    @Column
+    private Long detergentQuantity;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private  User user;
+
+    public Long getDetergentQuantity() {
+        return detergentQuantity;
+    }
+
+    public void setDetergentQuantity(Long detergentQuantity) {
+        this.detergentQuantity = detergentQuantity;
+    }
 
     public User getUser() {
         return user;
@@ -31,11 +42,14 @@ public class WashingMachine {
         this.washingMachineId = id;
     }
 
+
+
     public WashingMachine(Long washingMachineId, User user) {
         this.washingMachineId = washingMachineId;
         this.user = user;
     }
 
     public WashingMachine() {
+
     }
 }

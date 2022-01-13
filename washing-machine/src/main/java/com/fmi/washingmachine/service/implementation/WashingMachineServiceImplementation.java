@@ -1,15 +1,22 @@
 package com.fmi.washingmachine.service.implementation;
 
+import com.fmi.washingmachine.entity.ErrorCode;
 import com.fmi.washingmachine.entity.User;
 import com.fmi.washingmachine.entity.WashingMachine;
+import com.fmi.washingmachine.entity.WashingProgram;
+import com.fmi.washingmachine.repository.ErrorCodeRepository;
 import com.fmi.washingmachine.repository.UserRepository;
 import com.fmi.washingmachine.repository.WachingMachineRepository;
+import com.fmi.washingmachine.repository.WashingProgramRepository;
 import com.fmi.washingmachine.service.UserService;
 import com.fmi.washingmachine.service.WashingMachineService;
+import com.fmi.washingmachine.web.rest.dtos.Items;
+import com.fmi.washingmachine.web.rest.dtos.StartWashDTO;
+import org.hibernate.cache.spi.support.AbstractReadWriteAccess;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.*;
 
 @Service
 public class WashingMachineServiceImplementation implements WashingMachineService {
@@ -23,20 +30,125 @@ public class WashingMachineServiceImplementation implements WashingMachineServic
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    WashingProgramRepository washingProgramRepository;
+
+    @Autowired
+    ErrorCodeRepository errorCodeRepository;
+
     @Override
-    public WashingMachine addWashingMachine(Long userId, WashingMachine washingMachine) {
-        User user = userRepository.findById(userId).orElse(null);
-        if (user != null) {
-            washingMachine.setUser(user);
-            return wachingMachineRepository.save(washingMachine);
-        }
-        else{
-            return null;
-        }
+    public WashingMachine addWashingMachine() {
+        return wachingMachineRepository.save(new WashingMachine());
     }
 
     @Override
     public List<WashingMachine> getAllWashingMachines() {
         return wachingMachineRepository.findAll();
     }
-}
+
+    @Override
+    public WashingMachine addWashingMachineToApp(Long userId, WashingMachine washingMachine) {
+        washingMachine.setUser(userRepository.findById(userId).orElse(null));
+        return wachingMachineRepository.save(washingMachine);
+    }
+
+    @Override
+    public WashingProgram chooseProgram(StartWashDTO startWashDTO) {
+
+        System.out.println(startWashDTO);
+        ArrayList<Items> items = startWashDTO.getItems();
+
+        ArrayList<String>  fabrics =  new ArrayList<>();
+        for(Items item:items){
+            fabrics.add(item.getFabric());
+        }
+        if(fabrics.get(0).compareTo("silk") == 0){
+            return washingProgramRepository.findByProgramName("delicates");
+        }
+        return washingProgramRepository.findByProgramName(fabrics.get(0) + startWashDTO.getSoilLevel());
+
+    }
+
+    @Override
+    public ErrorCode scanItems(StartWashDTO startWashDTO) {
+        if(scanFabricsAndColors(startWashDTO.getItems()) != null){
+            return scanFabricsAndColors(startWashDTO.getItems());
+        }
+        if(checkWeight(startWashDTO.getWeight()) != null){
+            return checkWeight(startWashDTO.getWeight());
+        }
+        return null;
+    }
+
+
+
+    private ErrorCode checkWeight(Float weight) {
+        if(weight > 10){
+            return errorCodeRepository.findById("Err3").orElse(null);
+        }
+        return null;
+    }
+
+    public ErrorCode scanFabricsAndColors(ArrayList<Items> fabricsAndColors){
+        ArrayList<String> fabrics = new ArrayList<>();
+        ArrayList<String> colors = new ArrayList<>();
+        for(Items item:fabricsAndColors){
+            fabrics.add(item.getFabric());
+            colors.add(item.getColor());
+        }
+        if(canColorsBeWashedTogether(colors) == false){
+            return errorCodeRepository.findById("Err1").orElse(null);
+        }
+        if(canFabricsBeWashedTogether(fabrics) == false){
+            return errorCodeRepository.findById("Err2").orElse(null);
+        }
+        if(checkIfFabricsCanBeWashed(fabrics) == false){
+            return errorCodeRepository.findById("Err4").orElse(null);
+        }
+
+
+        return null;
+    }
+
+    private boolean checkIfFabricsCanBeWashed(ArrayList<String> fabrics) {
+        for(int i = 0; i < fabrics.size() - 1; i++){
+            if(fabrics.get(i).compareTo("leather") == 0 || fabrics.get(i).compareTo("fur") == 0){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean canColorsBeWashedTogether(ArrayList<String> colors) {
+        ArrayList<String> category1 = new ArrayList<>(Arrays.asList("white", "alabaster", "antique white", "baby blue", "beige", "blanche almond", "canary", "champagne"));
+        ArrayList<String> category2 = new ArrayList<>(Arrays.asList("orange", "yellow", "red", "amaranth", "barn red", "brown", "carmine", "crimson"));
+        ArrayList<String> category3 = new ArrayList<>(Arrays.asList("blank", "charcoal", "coffee", "dark green", "dark sienna", "blue", "eigengrau", "purple"));
+        boolean cat1 = false, cat2 = false, cat3 = false;
+        for (String color : colors) {
+            if (category1.contains(color)) {
+                cat1 = true;
+            } else if (category2.contains(color)) {
+                cat2 = true;
+            } else if (category3.contains(color)) {
+                cat3 = true;
+            }
+        }
+        Integer nrOfCategories = 0;
+        if (cat1) nrOfCategories++;
+        if (cat2) nrOfCategories++;
+        if (cat3) nrOfCategories++;
+        if (nrOfCategories > 1) {
+            return false;
+        }
+        return true;
+    }
+    
+    public boolean canFabricsBeWashedTogether(ArrayList<String> fabrics){
+
+        for(int i = 0; i < fabrics.size() - 1; i++){
+            if(fabrics.get(i).compareTo(fabrics.get(i+1)) != 0){
+                return false;
+            }
+        }
+        return true;
+    }}
