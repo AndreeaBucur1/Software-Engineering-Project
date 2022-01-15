@@ -8,7 +8,16 @@ const Home = () => {
 
   return (
     <Components.Container>
+      <Components.NavBar>
+        <Components.Title>
+          Hello {user ? user.firstName : ''}
+        </Components.Title>
+        <Components.LogoutButton onClick={logout}>Logout</Components.LogoutButton>
+      </Components.NavBar>
 
+      <Components.Button>
+        <Components.ButtonText>{'START MACHINE'}</Components.ButtonText>
+      </Components.Button>
     </Components.Container>
   );
 };
