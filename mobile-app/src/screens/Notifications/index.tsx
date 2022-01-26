@@ -1,26 +1,24 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Components } from "./styles";
 import { AuthContext } from "../../providers/AuthProvider/context";
-import { Machine } from "../../api/types";
-import { addMachine, getAllMachines } from "../../api/user";
+import { Notification } from "../../api/types";
+import { addMachine, getAllMachines, getAllNotifications } from "../../api/user";
 import { LoaderContext } from "../../providers/LoaderProvider/context";
 import MachineCell from "./MachineCell";
 import TextField from "../../components/TextFIeld";
 import { ReactComponent as BellIcon } from "../../assets/icons/bell.svg";
-import { useHistory } from "react-router-dom";
+Notification
+const Notifications = () => {
 
-const Home = () => {
-  const { user, logout } = useContext(AuthContext);
-  const [machines, setMachines] = useState<Machine[]>([]);
-  const [newMachineId, setNewMachineId] = useState<string | undefined>();
+  const {user} = useContext(AuthContext)
+  const [notifications, setNotifications] = useState<Notification []>([]);
   const { setIsLoading } = useContext(LoaderContext);
-  const history = useHistory();
 
-  const onGetAllMachines = async () => {
+  const onGetAllNotifications = async () => {
     if (user) {
-      const result = await getAllMachines(user.id);
+      const result = await getAllNotifications(user.id);
       if (!("errorMessage" in result)) {
-        setMachines(result);
+        setNotifications(result as Notification[]);
       }
     }
   };
@@ -46,14 +44,14 @@ const Home = () => {
   }, []);
 
   const onNotificationClick = () => {
-    history.push("/notifications");
-  };
+    history.pushState('/notification')
+  }
 
   return (
     <Components.Container>
       <Components.NavBar>
         <Components.Title>Hello {user ? user.firstName : ""}</Components.Title>
-        <BellIcon onClick={onNotificationClick} />
+        <BellIcon onClick ={onNotificationClick} />
         <Components.LogoutButton onClick={logout}>
           Logout
         </Components.LogoutButton>
@@ -76,4 +74,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default Notifications;
