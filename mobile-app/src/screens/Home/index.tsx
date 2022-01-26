@@ -52,11 +52,16 @@ const Home = () => {
   return (
     <Components.Container>
       <Components.NavBar>
-        <Components.Title>Hello {user ? user.firstName : ""}</Components.Title>
-        <BellIcon onClick={onNotificationClick} />
+        <Components.Title>Hello</Components.Title>
+        <Components.Wrapper>
+        <Components.IconWrapper onClick = {onNotificationClick}>
+          <BellIcon/>
+        </Components.IconWrapper>
+
         <Components.LogoutButton onClick={logout}>
           Logout
         </Components.LogoutButton>
+        </Components.Wrapper>
       </Components.NavBar>
 
       <Components.Title>Add a new washing machine</Components.Title>

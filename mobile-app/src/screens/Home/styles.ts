@@ -41,4 +41,14 @@ export const Components = {
   ButtonText: styled.h6`
     color: #FFFFFF;
   `,
+
+  IconWrapper: styled.div`
+  width: 20px;
+  height: 20px;`,
+
+  Wrapper: styled.div`
+  flex-direction: row;
+  display: flex;
+  gap:20px;
+  align-items: center`,
 };

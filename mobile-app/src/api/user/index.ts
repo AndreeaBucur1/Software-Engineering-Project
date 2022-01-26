@@ -1,4 +1,4 @@
-import {Machine, ProjectError, User} from "../types";
+import {Machine, ProjectError, Notification} from "../types";
 
 export const getAllMachines = async (id: string): Promise<Machine[] | ProjectError> => {
     try {
@@ -35,14 +35,16 @@ export const addMachine = async (userId: string, washingMachineId: string): Prom
 
 export const getAllNotifications = async (userId: string): Promise<Notification[] | ProjectError> => {
     try {
-        const result:any = await fetch(`http://localhost:8081/washing-machines/get-all-notification`, {
-            method: "GET",
-            headers: { 'Content-Type': 'application/json'},
-            body: JSON.stringify({})
-        })
+        // const result:any = await fetch(`http://localhost:8081/washing-machines/get-all-notification`, {
+        //     method: "GET",
+        //     headers: { 'Content-Type': 'application/json'},
+        //     body: JSON.stringify({})
+        // })
+        //
+        // const data = result.json()
+        // return data.map((item:any) =>  { return {id: item.id, message:item.message}})
 
-        const data = result.json()
-        return data.map((item:any) =>  { return {id: item.id, message:item.message}})
+        return [{id: '1', message: "You get .."}]
     } catch (error) {
         console.log(error);
         return { errorMessage: (error as any).message } as ProjectError;

@@ -9,6 +9,7 @@ import { AuthContext } from "../providers/AuthProvider/context";
 import Signup from "../screens/Signup";
 import Login from "../screens/Login";
 import Home from "../screens/Home";
+import Notifications from "../screens/Notifications";
 
 const Routes = () => {
   const { isLoggedIn } = useContext(AuthContext);
@@ -18,8 +19,8 @@ const Routes = () => {
       <Route exact path="/home">
         <Home />
       </Route>
-      <Route exact path="/notifactions">
-        <Home />
+      <Route exact path="/notifications">
+        <Notifications />
       </Route>
       <Redirect to="/home" />
     </Switch>
