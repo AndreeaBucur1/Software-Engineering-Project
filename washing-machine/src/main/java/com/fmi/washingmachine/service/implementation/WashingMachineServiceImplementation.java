@@ -1,18 +1,14 @@
 package com.fmi.washingmachine.service.implementation;
 
 import com.fmi.washingmachine.entity.ErrorCode;
-import com.fmi.washingmachine.entity.User;
+import com.fmi.washingmachine.entity.Notification;
 import com.fmi.washingmachine.entity.WashingMachine;
 import com.fmi.washingmachine.entity.WashingProgram;
-import com.fmi.washingmachine.repository.ErrorCodeRepository;
-import com.fmi.washingmachine.repository.UserRepository;
-import com.fmi.washingmachine.repository.WachingMachineRepository;
-import com.fmi.washingmachine.repository.WashingProgramRepository;
+import com.fmi.washingmachine.repository.*;
 import com.fmi.washingmachine.service.UserService;
 import com.fmi.washingmachine.service.WashingMachineService;
 import com.fmi.washingmachine.web.rest.dtos.Items;
 import com.fmi.washingmachine.web.rest.dtos.StartWashDTO;
-import org.hibernate.cache.spi.support.AbstractReadWriteAccess;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,13 +18,16 @@ import java.util.*;
 public class WashingMachineServiceImplementation implements WashingMachineService {
 
     @Autowired
-    WachingMachineRepository wachingMachineRepository;
+    WashingMachineRepository washingMachineRepository;
 
     @Autowired
     UserService userService;
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    NotificationRepository notificationRepository;
 
     @Autowired
     WashingProgramRepository washingProgramRepository;
@@ -38,18 +37,18 @@ public class WashingMachineServiceImplementation implements WashingMachineServic
 
     @Override
     public WashingMachine addWashingMachine() {
-        return wachingMachineRepository.save(new WashingMachine());
+        return washingMachineRepository.save(new WashingMachine());
     }
 
     @Override
     public List<WashingMachine> getAllWashingMachines() {
-        return wachingMachineRepository.findAll();
+        return washingMachineRepository.findAll();
     }
 
     @Override
     public WashingMachine addWashingMachineToApp(Long userId, WashingMachine washingMachine) {
         washingMachine.setUser(userRepository.findById(userId).orElse(null));
-        return wachingMachineRepository.save(washingMachine);
+        return washingMachineRepository.save(washingMachine);
     }
 
     @Override
@@ -67,6 +66,48 @@ public class WashingMachineServiceImplementation implements WashingMachineServic
         }
         return washingProgramRepository.findByProgramName(fabrics.get(0) + startWashDTO.getSoilLevel());
 
+    }
+    static final long ONE_MINUTE_IN_MILLIS = 60000;
+
+    public static Date addMinutesToDate(Long minutes, Date beforeTime) {
+
+        long curTimeInMs = beforeTime.getTime();
+        Date afterAddingMins = new Date(curTimeInMs
+                + (minutes * ONE_MINUTE_IN_MILLIS));
+        return afterAddingMins;
+    }
+
+    @Override
+    public ErrorCode startProgram(Long washingMachineId, String programName) {
+        WashingMachine washingMachine = washingMachineRepository.findById(washingMachineId).orElse(null);
+        if(washingMachine != null) {
+            WashingProgram washingProgram = washingProgramRepository.findByProgramName(programName);
+            if(washingProgram != null) {
+                if(washingProgram.getDetergentQuantity() > washingMachine.getDetergentQuantity()){
+                    Notification notification = new Notification("Not enough detergent. Please refill",new Date(),washingMachine);
+                    notificationRepository.save(notification);
+                    return errorCodeRepository.findById("Err5").orElse(null);
+                }
+                else{
+                    Notification startNotification = new Notification("Washing program started",addMinutesToDate(washingProgram.getTime(), new Date()),washingMachine);
+                    notificationRepository.save(startNotification);
+                    washingMachine.setDetergentQuantity(washingMachine.getDetergentQuantity()-washingProgram.getDetergentQuantity());
+                    Notification endNotification = new Notification("Washing program ended",addMinutesToDate(washingProgram.getTime(), new Date()),washingMachine);
+                    notificationRepository.save(endNotification);
+
+                }
+            }
+        }
+
+        return null;
+    }
+
+    @Override
+    public void addDetergent(Long quantity, Long washingMachineId) {
+        WashingMachine washingMachine = washingMachineRepository.findById(washingMachineId).orElse(null);
+        if(washingMachine != null) {
+            washingMachine.setDetergentQuantity(washingMachine.getDetergentQuantity() + quantity);
+        }
     }
 
     @Override

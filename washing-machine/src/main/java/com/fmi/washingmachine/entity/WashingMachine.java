@@ -1,6 +1,9 @@
 package com.fmi.washingmachine.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "washing_machine")
@@ -17,6 +20,7 @@ public class WashingMachine {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private  User user;
+
 
     public Long getDetergentQuantity() {
         return detergentQuantity;
