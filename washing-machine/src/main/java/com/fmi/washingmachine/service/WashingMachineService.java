@@ -17,6 +17,12 @@ public interface WashingMachineService {
     ErrorCode scanItems(StartWashDTO startWashDTO);
 
     WashingProgram chooseProgram(StartWashDTO startWashDTO);
+
+    ErrorCode startProgram(Long washingMachineId, String programId);
+
+    void addDetergent(Long quantity, Long washingMachineId);
+
 }
+
 
 
