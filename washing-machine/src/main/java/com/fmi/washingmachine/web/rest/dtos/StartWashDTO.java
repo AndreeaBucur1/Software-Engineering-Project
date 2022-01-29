@@ -1,6 +1,5 @@
 package com.fmi.washingmachine.web.rest.dtos;
 
-import jdk.nashorn.internal.runtime.arrays.ArrayLikeIterator;
 
 import java.util.ArrayList;
 import java.util.HashMap;
