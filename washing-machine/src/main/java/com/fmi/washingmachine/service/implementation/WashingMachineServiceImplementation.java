@@ -1,5 +1,6 @@
 package com.fmi.washingmachine.service.implementation;
 
+import com.fmi.washingmachine.MQTT.WashingMachineMQTT;
 import com.fmi.washingmachine.entity.ErrorCode;
 import com.fmi.washingmachine.entity.Notification;
 import com.fmi.washingmachine.entity.WashingMachine;
@@ -67,15 +68,6 @@ public class WashingMachineServiceImplementation implements WashingMachineServic
         return washingProgramRepository.findByProgramName(fabrics.get(0) + startWashDTO.getSoilLevel());
 
     }
-    static final long ONE_MINUTE_IN_MILLIS = 60000;
-
-    public static Date addMinutesToDate(Long minutes, Date beforeTime) {
-
-        long curTimeInMs = beforeTime.getTime();
-        Date afterAddingMins = new Date(curTimeInMs
-                + (minutes * ONE_MINUTE_IN_MILLIS));
-        return afterAddingMins;
-    }
 
     @Override
     public ErrorCode startProgram(Long washingMachineId, String programName) {
@@ -89,11 +81,12 @@ public class WashingMachineServiceImplementation implements WashingMachineServic
                     return errorCodeRepository.findById("Err5").orElse(null);
                 }
                 else{
-                    Notification startNotification = new Notification("Washing program started",addMinutesToDate(washingProgram.getTime(), new Date()),washingMachine);
+                    Notification startNotification = new Notification("Washing program started",new Date(),washingMachine);
                     notificationRepository.save(startNotification);
                     washingMachine.setDetergentQuantity(washingMachine.getDetergentQuantity()-washingProgram.getDetergentQuantity());
-                    Notification endNotification = new Notification("Washing program ended",addMinutesToDate(washingProgram.getTime(), new Date()),washingMachine);
-                    notificationRepository.save(endNotification);
+                    washingMachineRepository.save(washingMachine);
+                    WashingMachineMQTT w1 = new WashingMachineMQTT();
+                    w1.mqtt(washingMachine, washingProgram.getTime(), notificationRepository);
 
                 }
             }
