@@ -8,3 +8,15 @@ export interface User  {
 export interface ProjectError {
   errorMessage: string;
 }
+
+export interface Machine
+{
+  id: string;
+}
+
+
+export interface Notification
+{
+  id: string;
+  message: string
+}

@@ -4,30 +4,27 @@ import { Button } from "@mui/material";
 export const Components = {
   Container: styled.div`
     padding: 24px;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-    justify-content: center;
-  `,
-
-  NavBar: styled.div`
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
-  `,
-
-  Title: styled.h3`
-    color: #3e567c;
-  `,
-
-  LogoutButton: styled.span`
-    color: #3e567c;
+    gap: 16px;
+    width: 70%;
     align-self: center;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #dfdad8;
   `,
+
+  Text: styled.span`
+    text-align: center;
+  `,
+
+  Label: styled.span`
+    color: #3e567c;
+  `,
+
+  Select : styled.select``,
 
   Button: styled(Button)`
-    margin-top: -24px;
     text-transform: none !important;
     align-self: center;
     &:hover {
@@ -41,10 +38,9 @@ export const Components = {
     color: #ffffff;
   `,
 
-  Wrapper: styled.div`
-    flex-direction: row;
-    display: flex;
-    gap: 20px;
-    align-items: center;
+  IconWrapper: styled.div`
+    width: 20px;
+    height: 20px;
+    align-self: center;
   `,
 };

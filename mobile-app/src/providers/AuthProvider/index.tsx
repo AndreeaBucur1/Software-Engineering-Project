@@ -22,6 +22,8 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     if (result && 'errorMessage' in result) {
       return result as ProjectError;
     }
+
+    console.log(result)
     setIsLoggedIn(true);
     setUser(result);
   };

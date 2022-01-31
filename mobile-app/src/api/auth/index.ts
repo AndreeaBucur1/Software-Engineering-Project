@@ -1,11 +1,20 @@
-import {ProjectError, User} from "../types";
+import { ProjectError, User } from "../types";
 
-export const loginAction = async (email: string, password: string): Promise<User | ProjectError> => {
+export const loginAction = async (
+  email: string,
+  password: string
+): Promise<User | ProjectError> => {
   try {
-    //login
+    const result: any = await fetch("http://localhost:8081/users/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
+    const data = await result.json();
     return {
-      errorMessage : "error"
-    }
+      id: data.userId,
+      email: data.email,
+    };
   } catch (error) {
     console.log(error);
     // @ts-ignore
@@ -13,14 +22,21 @@ export const loginAction = async (email: string, password: string): Promise<User
   }
 };
 
-export const signupAction = async (email: string, password: string): Promise<User | ProjectError> => {
+export const signupAction = async (
+  email: string,
+  password: string
+): Promise<User | ProjectError> => {
   try {
-    //signup
-    // @ts-ignore
+    const result: any = await fetch("http://localhost:8081/users/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
+    const data = await result.json();
     return {
-      id: "1", lastName:"denisa",
-      firstName: "fd", email :"d"
-    }
+      id: data.userId,
+      email: data.email,
+    };
   } catch (error) {
     console.log(error);
     return { errorMessage: (error as any).message } as ProjectError;
@@ -29,7 +45,6 @@ export const signupAction = async (email: string, password: string): Promise<Use
 
 export const logoutAction = async () => {
   try {
-   //logout
   } catch (error) {
     console.log(error);
   }
