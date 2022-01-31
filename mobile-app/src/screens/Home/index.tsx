@@ -23,17 +23,11 @@ const Home = () => {
   };
 
   const addWashingMachine = async () => {
-    if (user && newMachineId) {
+    if (user && newMachineId && newMachineId !== '') {
       setIsLoading(true);
-      const result = await addMachine(user.id, newMachineId);
-      if (!("errorMessage" in result)) {
-        const machines = await getAllMachines(user.id);
-
-        if (!("errorMessage" in machines)) {
-          setMachines(machines);
-        }
-      }
-      setNewMachineId(undefined);
+      await addMachine(user.id, newMachineId);
+      setNewMachineId('');
+      await onGetAllMachines();
       setIsLoading(false);
     }
   };

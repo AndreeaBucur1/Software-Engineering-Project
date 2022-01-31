@@ -3,21 +3,23 @@ import { Components } from "./styles";
 import { AuthContext } from "../../providers/AuthProvider/context";
 import { Notification } from "../../api/types";
 import { getAllNotifications } from "../../api/user";
-import {useHistory} from "react-router-dom";
+import {useHistory, useLocation} from "react-router-dom";
 import NotificationCell from "./NotificationCell";
 
 const Notifications = () => {
 
   const history = useHistory()
+  const query = new URLSearchParams(useLocation().search);
+  const machineId = query.get('id');
   const {user} = useContext(AuthContext)
   const [notifications, setNotifications] = useState<Notification []>([]);
 
   const onGetAllNotifications = async () => {
-    if (user) {
-      const result = await getAllNotifications(user.id);
-      if (!("errorMessage" in result)) {
-        setNotifications(result as Notification[]);
-      }
+if(machineId) {
+  const result = await getAllNotifications(machineId);
+  if (!("errorMessage" in result)) {
+    setNotifications(result as Notification[]);
+  }
     }
   };
 

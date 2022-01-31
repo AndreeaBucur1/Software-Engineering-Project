@@ -18,6 +18,12 @@ export const Components = {
     text-align: center;
   `,
 
+  Label: styled.span`
+    color: #3e567c;
+  `,
+
+  Select : styled.select``,
+
   Button: styled(Button)`
     text-transform: none !important;
     align-self: center;

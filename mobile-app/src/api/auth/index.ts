@@ -5,19 +5,15 @@ export const loginAction = async (
   password: string
 ): Promise<User | ProjectError> => {
   try {
-    // const result:any = await fetch('http://localhost:8081/users/register', {
-    //   method: "POST",
-    //   body : JSON.stringify({ email, password}),
-    //   headers:{}
-    // })
-    // let user : User = {
-    //   id: result.userId,
-    //   email:result.email
-    // }
-    // return user;
+    const result: any = await fetch("http://localhost:8081/users/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
+    const data = await result.json();
     return {
-      email: "hh",
-      id: "fh",
+      id: data.userId,
+      email: data.email,
     };
   } catch (error) {
     console.log(error);
@@ -36,14 +32,11 @@ export const signupAction = async (
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),
     });
-    console.log(result, "r");
-    const data = result.json();
-    console.log(data);
-    let user: User = {
+    const data = await result.json();
+    return {
       id: data.userId,
       email: data.email,
     };
-    return user;
   } catch (error) {
     console.log(error);
     return { errorMessage: (error as any).message } as ProjectError;
