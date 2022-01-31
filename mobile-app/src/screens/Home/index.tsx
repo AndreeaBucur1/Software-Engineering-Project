@@ -6,15 +6,12 @@ import { addMachine, getAllMachines } from "../../api/user";
 import { LoaderContext } from "../../providers/LoaderProvider/context";
 import MachineCell from "./MachineCell";
 import TextField from "../../components/TextFIeld";
-import { ReactComponent as BellIcon } from "../../assets/icons/bell.svg";
-import { useHistory } from "react-router-dom";
 
 const Home = () => {
   const { user, logout } = useContext(AuthContext);
   const [machines, setMachines] = useState<Machine[]>([]);
   const [newMachineId, setNewMachineId] = useState<string | undefined>();
   const { setIsLoading } = useContext(LoaderContext);
-  const history = useHistory();
 
   const onGetAllMachines = async () => {
     if (user) {
@@ -45,22 +42,14 @@ const Home = () => {
     onGetAllMachines().then();
   }, []);
 
-  const onNotificationClick = () => {
-    history.push("/notifications");
-  };
-
   return (
     <Components.Container>
       <Components.NavBar>
         <Components.Title>Hello</Components.Title>
         <Components.Wrapper>
-        <Components.IconWrapper onClick = {onNotificationClick}>
-          <BellIcon/>
-        </Components.IconWrapper>
-
-        <Components.LogoutButton onClick={logout}>
-          Logout
-        </Components.LogoutButton>
+          <Components.LogoutButton onClick={logout}>
+            Logout
+          </Components.LogoutButton>
         </Components.Wrapper>
       </Components.NavBar>
 
@@ -75,7 +64,7 @@ const Home = () => {
       </Components.Button>
       <Components.Title>Your washing machines</Components.Title>
       {machines.map((item) => (
-        <MachineCell item={item} />
+        <MachineCell item={item} key={item.id} />
       ))}
     </Components.Container>
   );

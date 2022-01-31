@@ -1,5 +1,5 @@
-import styled from 'styled-components/';
-import {Button} from "@mui/material";
+import styled from "styled-components/";
+import { Button } from "@mui/material";
 
 export const Components = {
   Container: styled.div`
@@ -9,14 +9,12 @@ export const Components = {
     flex-direction: column;
     gap: 24px;
     justify-content: center;
-   
   `,
 
   NavBar: styled.div`
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    
   `,
 
   Title: styled.h3`
@@ -25,7 +23,8 @@ export const Components = {
 
   LogoutButton: styled.span`
     color: #3e567c;
-    align-self: center`,
+    align-self: center;
+  `,
 
   Button: styled(Button)`
     margin-top: -24px;
@@ -39,16 +38,13 @@ export const Components = {
     background-color: #88a0c3;
   `,
   ButtonText: styled.h6`
-    color: #FFFFFF;
+    color: #ffffff;
   `,
 
-  IconWrapper: styled.div`
-  width: 20px;
-  height: 20px;`,
-
   Wrapper: styled.div`
-  flex-direction: row;
-  display: flex;
-  gap:20px;
-  align-items: center`,
+    flex-direction: row;
+    display: flex;
+    gap: 20px;
+    align-items: center;
+  `,
 };

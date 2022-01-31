@@ -1,25 +1,24 @@
-import styled from 'styled-components/';
-import {Button} from "@mui/material";
+import styled from "styled-components/";
+import { Button } from "@mui/material";
 
 export const Components = {
-    Container: styled.div`
+  Container: styled.div`
     padding: 24px;
     display: flex;
     flex-direction: row;
     gap: 16px;
-    width:70%;
+    width: 70%;
     align-self: center;
-    align-items:center;
-    justify-content:center;
+    align-items: center;
+    justify-content: center;
     border: 1px solid #dfdad8;
   `,
 
-    Text: styled.span`
+  Text: styled.span`
     text-align: center;
-    `,
+  `,
 
-    Button: styled(Button)`
-    margin-top: 12px;
+  Button: styled(Button)`
     text-transform: none !important;
     align-self: center;
     &:hover {
@@ -29,7 +28,13 @@ export const Components = {
     padding: 8px 16px;
     background-color: #88a0c3;
   `,
-    ButtonText: styled.h6`
-    color: #FFFFFF;
+  ButtonText: styled.h6`
+    color: #ffffff;
+  `,
+
+  IconWrapper: styled.div`
+    width: 20px;
+    height: 20px;
+    align-self: center;
   `,
 };
