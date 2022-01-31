@@ -8,7 +8,7 @@ import com.fmi.washingmachine.entity.WashingProgram;
 import com.fmi.washingmachine.repository.*;
 import com.fmi.washingmachine.service.UserService;
 import com.fmi.washingmachine.service.WashingMachineService;
-import com.fmi.washingmachine.web.rest.dtos.Items;
+import com.fmi.washingmachine.web.rest.dtos.Item;
 import com.fmi.washingmachine.web.rest.dtos.StartWashDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -56,10 +56,10 @@ public class WashingMachineServiceImplementation implements WashingMachineServic
     public WashingProgram chooseProgram(StartWashDTO startWashDTO) {
 
         System.out.println(startWashDTO);
-        ArrayList<Items> items = startWashDTO.getItems();
+        ArrayList<Item> items = startWashDTO.getItems();
 
         ArrayList<String>  fabrics =  new ArrayList<>();
-        for(Items item:items){
+        for(Item item:items){
             fabrics.add(item.getFabric());
         }
         if(fabrics.get(0).compareTo("silk") == 0){
@@ -123,10 +123,10 @@ public class WashingMachineServiceImplementation implements WashingMachineServic
         return null;
     }
 
-    public ErrorCode scanFabricsAndColors(ArrayList<Items> fabricsAndColors){
+    public ErrorCode scanFabricsAndColors(ArrayList<Item> fabricsAndColors){
         ArrayList<String> fabrics = new ArrayList<>();
         ArrayList<String> colors = new ArrayList<>();
-        for(Items item:fabricsAndColors){
+        for(Item item:fabricsAndColors){
             fabrics.add(item.getFabric());
             colors.add(item.getColor());
         }
