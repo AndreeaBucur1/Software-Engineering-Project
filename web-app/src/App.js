@@ -1,81 +1,161 @@
-import './App.css';
-import ClothList from "./ClothList";
-import React, { useState, useRef, useEffect } from 'react';
-import { v4 as uuidv4 } from 'uuid';
-import Button from "@material-ui/core/Button";
-import DeleteIcon from '@mui/icons-material/Delete';
-import AddIcon from '@mui/icons-material/Add';
-import washing from './washing.png';
-import ClothService from "./ClothService";
-const washingMachineId = 1;
+import "./styled";
+import React, { useState } from "react";
+import { Components } from "./styled";
+import { chooseProgram, scanItems, startProgram } from "./call";
+import MuiAlert from "@mui/material/Alert";
+import Snackbar from "@mui/material/Snackbar";
+
 function App() {
-
   const [clothes, setClothes] = useState([]);
-  const clothColorRef = useRef();
-  const clothFabricRef = useRef();
-  const clothWeightRef = useRef();
-  const clothSoilLevelRef = useRef();
+  const [fabric, setFabric] = useState("");
+  const [color, setColor] = useState("");
+  const [weight, setWeight] = useState("");
+  const [soil, setSoil] = useState("");
 
-  const LOCAL_STORAGE_KEY = 'clothes';
+  const [state, setState] = useState("scanItems");
+  const [program, setProgram] = useState("");
+  const [error, setError] = useState(undefined);
 
-  useEffect(() => {
-      const storedClothes = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY))
-      if(storedClothes) setClothes(storedClothes)
-  }, [])
+  const washingMachineId = 1;
 
-  useEffect(() => {
-      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(clothes))
-      console.log(clothes)
-  }, [clothes])
-
-  function handleAddCloth(e) {
-    const fabric = clothFabricRef.current.value;
-    const color = clothColorRef.current.value;
-    if (fabric === '') return
-    setClothes(prevClothes => {
-        return [...prevClothes, {
-            // id: uuidv4(),
-            fabric: fabric, color: color}]
-    })
-    clothFabricRef.current.value = null;
-    clothColorRef.current.value = null;
-
-
-  }
-
-  function handleScanItems( ){
-      // const weight = clothWeightRef.current.value;
-      // const soilLevel = clothSoilLevelRef.current.value;
-      console.log(document.getElementById("weight").value, document.getElementById("soilLevel").value);
-      ClothService.createCloth(clothes,document.getElementById("weight").value, document.getElementById("soilLevel").value,washingMachineId)
-      clothWeightRef.current.value = null;
-      clothSoilLevelRef.current.value = null;
-      setClothes([])
-  }
-
-  function handleClearClothes(){
-      setClothes([])
-  }
-
-    useEffect(() => {
-        document.body.style.background = '#F0F8FF';
+  function handleAddCloth() {
+    if (fabric === "" || color === "") return;
+    setClothes((prevClothes) => {
+      return [
+        ...prevClothes,
+        {
+          fabric: fabric,
+          color: color,
+        },
+      ];
     });
+    setFabric("");
+    setColor("");
+  }
+
+  async function onStartPress() {
+    await startProgram(washingMachineId, program);
+    setState("loading");
+  }
+
+  async function onChooseProgram() {
+    const _program = await chooseProgram();
+    setProgram(_program);
+    setState("start");
+  }
+
+  const dismissToast = () => {
+    setError(undefined);
+  };
+
+  async function handleScanItems() {
+    if (clothes.length === 0 || weight === "" || soil === "") {
+      setError("All fields must be completed");
+      return;
+    }
+    const result = await scanItems(clothes, weight, soil);
+    if (result === "Items do not match") {
+      setError("Items do not match");
+    } else {
+      setState("chooseProgram");
+    }
+  }
 
   return (
-      <div className="Page">
-        <img style={{width:'250px',margin:'30px'}} src={washing} alt="Logo" />
-        {/*<ClothList clothes={clothes} />*/}
-        <h2>Fabric :&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Color :</h2>
-        <input id="fabric" ref={clothFabricRef} type="text" />&nbsp;&nbsp;
-        <input id="color" ref={clothColorRef} type="text" />&nbsp;&nbsp;<br/>
-        <h2>Weight(1-10) :&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Soil Level(1-3) :</h2>
-        <input id="weight" ref={clothWeightRef} type="text"/>&nbsp;&nbsp;
-        <input id="soilLevel" ref={clothSoilLevelRef} type="text"/>&nbsp;&nbsp;
-        <Button variant="outlined" color="primary" endIcon={<AddIcon />} onClick={handleAddCloth}>Add cloth</Button>&nbsp;
-        <Button variant="outlined" color="secondary" endIcon={<DeleteIcon />} onClick={handleClearClothes}>Clear</Button>&nbsp;
-        <Button variant="outlined" endIcon={<DeleteIcon />} onClick={handleScanItems}>Scan Items</Button>
-      </div>
+    <Components.Container>
+      <Components.Image src={require("./washing.png")} />
 
+      {state === "scanItems" ? (
+        <Components.DataContainer>
+          <Components.DataRow>
+            <Components.Wrapper>
+              <Components.Title>{"Fabric"}</Components.Title>
+              <Components.InputText
+                autoCapitalize={"none"}
+                value={fabric}
+                onChange={(event) => {
+                  setFabric(event.target.value);
+                }}
+              />
+            </Components.Wrapper>
+            <Components.Wrapper>
+              <Components.Title>{"Color"}</Components.Title>
+              <Components.InputText
+                autoCapitalize={"none"}
+                value={color}
+                onChange={(event) => {
+                  setColor(event.target.value);
+                }}
+              />
+            </Components.Wrapper>
+
+            <Components.Button onClick={handleAddCloth}>
+              <Components.ButtonText>{"Add cloth"}</Components.ButtonText>
+            </Components.Button>
+          </Components.DataRow>
+
+          <Components.DataRow>
+            <Components.Wrapper>
+              <Components.Title>{"Weight(1-10)"}</Components.Title>
+              <Components.InputText
+                autoCapitalize={"none"}
+                value={weight}
+                onChange={(event) => {
+                  setWeight(event.target.value);
+                }}
+              />
+            </Components.Wrapper>
+            <Components.Wrapper>
+              <Components.Title>{"Soil Level(1-3)"}</Components.Title>
+              <Components.InputText
+                autoCapitalize={"none"}
+                value={soil}
+                onChange={(event) => {
+                  setSoil(event.target.value);
+                }}
+              />
+            </Components.Wrapper>
+            <Components.Button onClick={handleScanItems}>
+              <Components.ButtonText>{"Scan items"}</Components.ButtonText>
+            </Components.Button>
+          </Components.DataRow>
+        </Components.DataContainer>
+      ) : state === "chooseProgram" ? (
+        <Components.StartContainer>
+          <Components.Button onClick={onChooseProgram}>
+            <Components.ButtonText>{"Choose program"}</Components.ButtonText>
+          </Components.Button>
+        </Components.StartContainer>
+      ) : state === "start" ? (
+        <Components.StartContainer>
+          <Components.Title>{"Program: " + program}</Components.Title>
+          <Components.Button onClick={onStartPress}>
+            <Components.ButtonText>{"Start program"}</Components.ButtonText>
+          </Components.Button>
+        </Components.StartContainer>
+      ) : (
+        <Components.LoaderContainer>
+          <Components.CircularProgress size={32} />
+        </Components.LoaderContainer>
+      )}
+
+      <Snackbar
+        transitionDuration={0}
+        open={!!error}
+        autoHideDuration={2500}
+        onClose={dismissToast}
+      >
+        <MuiAlert
+          elevation={6}
+          onClose={dismissToast}
+          sx={{ width: "100%" }}
+          variant="filled"
+          severity={"error"}
+        >
+          <Components.ErrorText>{error}</Components.ErrorText>
+        </MuiAlert>
+      </Snackbar>
+    </Components.Container>
   );
 }
 
