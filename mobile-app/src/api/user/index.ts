@@ -2,7 +2,7 @@ import {Machine, ProjectError, Notification} from "../types";
 
 export const getAllMachines = async (id: string): Promise<Machine[] | ProjectError> => {
     try {
-        const result:any = await fetch('http://localhost:8081/washing-machines', {
+        const result:any = await fetch('http://localhost:8081/washing-machines/' + id, {
             method: "GET",
             headers: { 'Content-Type': 'application/json'},
         })
@@ -50,7 +50,8 @@ export const getAllNotifications = async (id: string): Promise<Notification[] | 
 
 export const startMachine = async (id: string, program:string): Promise<void> => {
     try {
-        const result:any = await fetch(`http://localhost:8081/washing-machines/start-program/${id}/program/${program}`, {
+        console.log(program);
+        const result:any = await fetch(`http://localhost:8081/washing-machines/start-program/2/program/${program}`, {
             method: "POST",
             headers: { 'Content-Type': 'application/json'},
 

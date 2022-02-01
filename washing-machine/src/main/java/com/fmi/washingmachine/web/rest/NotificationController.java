@@ -14,7 +14,7 @@ public class NotificationController {
     @Autowired
     NotificationService notificationService;
 
-    @CrossOrigin(origins = "http://localhost:3001")
+    @CrossOrigin
     @GetMapping("/washing-machine-id/{washingMachineId}")
     private ArrayList<Notification> getNotifications(@PathVariable("washingMachineId") Long washingMachineId) {
         return notificationService.getNotificationsByWashingMachineId(washingMachineId);

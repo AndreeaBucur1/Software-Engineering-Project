@@ -34,7 +34,11 @@ function App() {
   }
 
   async function onStartPress() {
-    await startProgram(washingMachineId, program);
+    const data =  await startProgram(washingMachineId, program);
+    if(data){
+      setError(data.description);
+
+    }
     setState("loading");
   }
 

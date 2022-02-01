@@ -17,25 +17,25 @@ public class WashingMachineController {
     @Autowired
     WashingMachineService washingMachineService;
 
-    @CrossOrigin(origins = "http://localhost:3000")
+    @CrossOrigin
     @PostMapping("/add-washing-machine")
     public WashingMachine addWashingMachine(){
         return washingMachineService.addWashingMachine();
     }
 
-    @CrossOrigin(origins = "http://localhost:3001")
-    @GetMapping()
-    public List<WashingMachine> getAllWashingMachines(){
-        return washingMachineService.getAllWashingMachines();
+    @CrossOrigin
+    @GetMapping("/{userId}")
+    public List<WashingMachine> getAllWashingMachines(@PathVariable("userId") Long userId){
+        return washingMachineService.getAllWashingMachines(userId);
     }
 
-    @CrossOrigin(origins = "http://localhost:3001")
+    @CrossOrigin
     @PostMapping("/add-washing-machine/userId/{userId}")
     public WashingMachine addWashingMachineToApp(@PathVariable("userId") Long userId, @RequestBody() WashingMachine washingMachine){
         return washingMachineService.addWashingMachineToApp(userId, washingMachine);
     }
 
-    @CrossOrigin(origins = "http://localhost:3000")
+    @CrossOrigin
     @PostMapping("/scan-items")
     public ErrorCode scanItems(@RequestBody()StartWashDTO startWashDTO){
         System.out.println(startWashDTO);
@@ -54,7 +54,7 @@ public class WashingMachineController {
         return washingMachineService.startProgram(washingMachineId, programId);
     }
 
-    @CrossOrigin(origins = "http://localhost:3000")
+    @CrossOrigin
     @PostMapping("/add-detergent/{washingMachineId}")
     public void addDetergent(@RequestBody() Long quantity, @PathVariable("washingMachineId") Long washingMachineId) {
         washingMachineService.addDetergent(quantity,washingMachineId);

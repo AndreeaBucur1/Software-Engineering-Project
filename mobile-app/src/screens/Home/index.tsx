@@ -15,6 +15,7 @@ const Home = () => {
 
   const onGetAllMachines = async () => {
     if (user) {
+      console.log(user);
       const result = await getAllMachines(user.id);
       if (!("errorMessage" in result)) {
         setMachines(result);

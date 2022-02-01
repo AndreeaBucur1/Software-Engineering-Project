@@ -10,7 +10,7 @@ import java.util.List;
 public interface WashingMachineService {
     WashingMachine addWashingMachine();
 
-    List<WashingMachine> getAllWashingMachines();
+    List<WashingMachine> getAllWashingMachines(Long userId);
 
     WashingMachine addWashingMachineToApp(Long userId, WashingMachine washingMachine);
 

@@ -1,10 +1,7 @@
 package com.fmi.washingmachine.service.implementation;
 
 import com.fmi.washingmachine.MQTT.WashingMachineMQTT;
-import com.fmi.washingmachine.entity.ErrorCode;
-import com.fmi.washingmachine.entity.Notification;
-import com.fmi.washingmachine.entity.WashingMachine;
-import com.fmi.washingmachine.entity.WashingProgram;
+import com.fmi.washingmachine.entity.*;
 import com.fmi.washingmachine.repository.*;
 import com.fmi.washingmachine.service.UserService;
 import com.fmi.washingmachine.service.WashingMachineService;
@@ -42,8 +39,12 @@ public class WashingMachineServiceImplementation implements WashingMachineServic
     }
 
     @Override
-    public List<WashingMachine> getAllWashingMachines() {
-        return washingMachineRepository.findAll();
+    public List<WashingMachine> getAllWashingMachines(Long userId) {
+        User user = userRepository.findById(userId).orElse(null);
+        if(user != null) {
+            return washingMachineRepository.findAllByUser(user);
+        }
+        return null;
     }
 
     @Override

@@ -26,6 +26,7 @@ export const chooseProgram = async (items, weight, soilLevel)  => {
           soilLevel,
       }, { "Content-Type": "application/json" } )
           .then(res => {
+              console.log(items)
               console.log(res?.data?.programName, "data")
               return res?.data?.programName
           })
@@ -36,9 +37,9 @@ export const chooseProgram = async (items, weight, soilLevel)  => {
 };
 
 export const startProgram = async (id, program) => {
-  try {
+  try {console.log(program);
     const result = await fetch(
-      "http://localhost:8081/washing-machines/start-program",
+      "http://localhost:8081/washing-machines/start-program/2/program/" + program,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -50,5 +51,6 @@ export const startProgram = async (id, program) => {
     );
 
     const data = await result.json();
+    return data;
   } catch (error) {}
 };

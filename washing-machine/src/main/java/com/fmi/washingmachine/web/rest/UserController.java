@@ -14,19 +14,19 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @CrossOrigin(origins = "http://localhost:3001")
+    @CrossOrigin
     @PostMapping("/register")
     public User register(@RequestBody User user){
         return userService.register(user);
     }
 
-    @CrossOrigin(origins = "http://localhost:3000")
+    @CrossOrigin
     @GetMapping("")
     public List<User> getAllUsers() {
         return userService.getUsers();
     }
 
-    @CrossOrigin(origins = "http://localhost:3001")
+    @CrossOrigin
     @PostMapping("/login")
     public User login(@RequestBody() User user) {
         return userService.login(user);
