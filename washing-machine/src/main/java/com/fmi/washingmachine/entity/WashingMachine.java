@@ -56,4 +56,9 @@ public class WashingMachine {
     public WashingMachine() {
 
     }
+
+    public WashingMachine(Long washingMachineId, Long detergentQuantity) {
+        this.washingMachineId = washingMachineId;
+        this.detergentQuantity = detergentQuantity;
+    }
 }

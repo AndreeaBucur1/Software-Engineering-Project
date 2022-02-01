@@ -36,4 +36,12 @@ public class ErrorCode {
         this.errorId = errorId;
         this.description = description;
     }
+
+    @Override
+    public String toString() {
+        return "ErrorCode{" +
+                "errorId='" + errorId + '\'' +
+                ", description='" + description + '\'' +
+                '}';
+    }
 }
