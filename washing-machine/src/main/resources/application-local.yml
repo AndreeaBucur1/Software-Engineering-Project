@@ -1,6 +1,6 @@
 spring:
   datasource:
-    password:Activitate14
+    password:password
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher

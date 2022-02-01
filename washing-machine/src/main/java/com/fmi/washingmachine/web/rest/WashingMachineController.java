@@ -23,13 +23,13 @@ public class WashingMachineController {
         return washingMachineService.addWashingMachine();
     }
 
-    @CrossOrigin(origins = "http://localhost:3000")
+    @CrossOrigin(origins = "http://localhost:3001")
     @GetMapping()
     public List<WashingMachine> getAllWashingMachines(){
         return washingMachineService.getAllWashingMachines();
     }
 
-    @CrossOrigin(origins = "http://localhost:3000")
+    @CrossOrigin(origins = "http://localhost:3001")
     @PostMapping("/add-washing-machine/userId/{userId}")
     public WashingMachine addWashingMachineToApp(@PathVariable("userId") Long userId, @RequestBody() WashingMachine washingMachine){
         return washingMachineService.addWashingMachineToApp(userId, washingMachine);
@@ -48,7 +48,7 @@ public class WashingMachineController {
         return washingMachineService.chooseProgram(startWashDTO);
     }
 
-    @CrossOrigin(origins = "http://localhost:3000")
+    @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"})
     @PostMapping("/start-program/{washingMachineId}/program/{programName}")
     public ErrorCode startProgram(@PathVariable("washingMachineId") Long washingMachineId, @PathVariable("programName") String programId ) {
         return washingMachineService.startProgram(washingMachineId, programId);

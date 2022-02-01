@@ -41,7 +41,7 @@ export const getAllNotifications = async (id: string): Promise<Notification[] | 
 
         const data = await result.json()
         console.log(data)
-        return data.map((item:any) =>  { return {id: item.id, message:item.message}})
+        return data.map((item:any) =>  { return {id: item.id, message:item.description}})
     } catch (error) {
         console.log(error);
         return { errorMessage: (error as any).message } as ProjectError;

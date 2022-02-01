@@ -1,48 +1,37 @@
+import axios from "axios";
+
 export const scanItems = async (items, weight, soilLevel) => {
   try {
-    const result = await fetch(
-      "http://localhost:8081/washing-machines/scan-items",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: {
+     return axios.post('http://localhost:8081/washing-machines/scan-items',  {
           items,
           weight,
           soilLevel,
-        },
-      }
-    );
+      }, { "Content-Type": "application/json" } )
+          .then(res => {
+              console.log(res.data, "data")
+              return res?.data?.description
+          })
 
-    await result.json();
   } catch (error) {
-    return "Items do not match";
+      console.log(error)
+    return error?.description;
   }
 };
 
 export const chooseProgram = async (items, weight, soilLevel)  => {
   try {
-    const result = await fetch(
-      "http://localhost:8081/washing-machines/choose-program",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: {
+      return axios.post('http://localhost:8081/washing-machines/choose-program',  {
           items,
           weight,
           soilLevel,
-        },
-      }
-    );
+      }, { "Content-Type": "application/json" } )
+          .then(res => {
+              console.log(res?.data?.programName, "data")
+              return res?.data?.programName
+          })
 
-    const data = await result.json();
-    console.log(data)
-    if (data !== null) {
-      return data;
-    } else {
-      return "default";
-    }
   } catch (error) {
-    return "default";
+    return null;
   }
 };
 

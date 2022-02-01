@@ -39,9 +39,17 @@ function App() {
   }
 
   async function onChooseProgram() {
-    const _program = await chooseProgram();
-    setProgram(_program);
-    setState("start");
+    const _program = await chooseProgram(clothes, parseInt(weight), parseInt(soil));
+    if(_program) {
+      setProgram(_program);
+      setState("start");
+    }
+    else
+    {
+      setError("Could not find a program")
+      setState("scanItems");
+    }
+
   }
 
   const dismissToast = () => {
@@ -53,9 +61,10 @@ function App() {
       setError("All fields must be completed");
       return;
     }
-    const result = await scanItems(clothes, weight, soil);
-    if (result === "Items do not match") {
-      setError("Items do not match");
+    const result = await scanItems(clothes, parseInt(weight), parseInt(soil));
+    if (result) {
+      setError(result);
+      setClothes([])
     } else {
       setState("chooseProgram");
     }

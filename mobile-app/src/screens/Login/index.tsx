@@ -21,6 +21,7 @@ const Login = () => {
     }
     setIsLoading(true);
     const error = await login(email, password);
+    setIsLoading(false);
     if (error) {
       setError(error.errorMessage);
     }
