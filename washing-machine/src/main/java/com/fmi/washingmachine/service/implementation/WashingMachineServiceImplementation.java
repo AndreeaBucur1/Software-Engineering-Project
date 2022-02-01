@@ -1,5 +1,6 @@
 package com.fmi.washingmachine.service.implementation;
 
+import com.fmi.washingmachine.MQTT.WashingMachineMQTT;
 import com.fmi.washingmachine.entity.ErrorCode;
 import com.fmi.washingmachine.entity.Notification;
 import com.fmi.washingmachine.entity.WashingMachine;
@@ -7,7 +8,7 @@ import com.fmi.washingmachine.entity.WashingProgram;
 import com.fmi.washingmachine.repository.*;
 import com.fmi.washingmachine.service.UserService;
 import com.fmi.washingmachine.service.WashingMachineService;
-import com.fmi.washingmachine.web.rest.dtos.Items;
+import com.fmi.washingmachine.web.rest.dtos.Item;
 import com.fmi.washingmachine.web.rest.dtos.StartWashDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -55,10 +56,10 @@ public class WashingMachineServiceImplementation implements WashingMachineServic
     public WashingProgram chooseProgram(StartWashDTO startWashDTO) {
 
         System.out.println(startWashDTO);
-        ArrayList<Items> items = startWashDTO.getItems();
+        ArrayList<Item> items = startWashDTO.getItems();
 
         ArrayList<String>  fabrics =  new ArrayList<>();
-        for(Items item:items){
+        for(Item item:items){
             fabrics.add(item.getFabric());
         }
         if(fabrics.get(0).compareTo("silk") == 0){
@@ -66,15 +67,6 @@ public class WashingMachineServiceImplementation implements WashingMachineServic
         }
         return washingProgramRepository.findByProgramName(fabrics.get(0) + startWashDTO.getSoilLevel());
 
-    }
-    static final long ONE_MINUTE_IN_MILLIS = 60000;
-
-    public static Date addMinutesToDate(Long minutes, Date beforeTime) {
-
-        long curTimeInMs = beforeTime.getTime();
-        Date afterAddingMins = new Date(curTimeInMs
-                + (minutes * ONE_MINUTE_IN_MILLIS));
-        return afterAddingMins;
     }
 
     @Override
@@ -89,11 +81,12 @@ public class WashingMachineServiceImplementation implements WashingMachineServic
                     return errorCodeRepository.findById("Err5").orElse(null);
                 }
                 else{
-                    Notification startNotification = new Notification("Washing program started",addMinutesToDate(washingProgram.getTime(), new Date()),washingMachine);
+                    Notification startNotification = new Notification("Washing program started",new Date(),washingMachine);
                     notificationRepository.save(startNotification);
                     washingMachine.setDetergentQuantity(washingMachine.getDetergentQuantity()-washingProgram.getDetergentQuantity());
-                    Notification endNotification = new Notification("Washing program ended",addMinutesToDate(washingProgram.getTime(), new Date()),washingMachine);
-                    notificationRepository.save(endNotification);
+                    washingMachineRepository.save(washingMachine);
+                    WashingMachineMQTT w1 = new WashingMachineMQTT();
+                    w1.mqtt(washingMachine, washingProgram.getTime(), notificationRepository);
 
                 }
             }
@@ -130,10 +123,10 @@ public class WashingMachineServiceImplementation implements WashingMachineServic
         return null;
     }
 
-    public ErrorCode scanFabricsAndColors(ArrayList<Items> fabricsAndColors){
+    public ErrorCode scanFabricsAndColors(ArrayList<Item> fabricsAndColors){
         ArrayList<String> fabrics = new ArrayList<>();
         ArrayList<String> colors = new ArrayList<>();
-        for(Items item:fabricsAndColors){
+        for(Item item:fabricsAndColors){
             fabrics.add(item.getFabric());
             colors.add(item.getColor());
         }

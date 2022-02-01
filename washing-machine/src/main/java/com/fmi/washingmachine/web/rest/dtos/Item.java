@@ -1,6 +1,6 @@
 package com.fmi.washingmachine.web.rest.dtos;
 
-public class Items {
+public class Item {
 
     private String fabric;
 
@@ -22,6 +22,9 @@ public class Items {
         this.color = color;
     }
 
+    public Item() {
+    }
+
     @Override
     public String toString() {
         return "Items{" +
@@ -30,7 +33,7 @@ public class Items {
                 '}';
     }
 
-    public Items(String fabric, String color) {
+    public Item(String fabric, String color) {
         this.fabric = fabric;
         this.color = color;
     }

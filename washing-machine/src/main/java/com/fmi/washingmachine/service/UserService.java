@@ -8,5 +8,8 @@ public interface UserService {
     User register(User user);
 
     List<User> getUsers();
+
+    User login(User user);
+
 }
 
