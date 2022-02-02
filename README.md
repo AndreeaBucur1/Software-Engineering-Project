@@ -1,4 +1,4 @@
-Tool-uri utilizate: React, Java, Spring, Maven, HIbernate, Junit si Mockito 
+Tool-uri utilizate: React, Java, Spring, Maven, HIbernate, Junit si Mockito, MySQL Workbench
 
 Pasi de instalare : 
 
